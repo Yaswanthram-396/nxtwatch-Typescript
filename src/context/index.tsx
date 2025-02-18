@@ -50,17 +50,8 @@ export interface VideoType {
 //   subscriber_count: string;
 // };
 
-type VideoDetails = {
-  id: string;
-  title: string;
-  video_url: string;
-  view_count: string;
-  published_at: string;
-  description: string;
-  channel?: Channel;
-};
 
-// Define the context state interface
+
 export interface ConfigurationContextType {
   savedList: VideoType[] ; 
   mode: boolean;
@@ -81,4 +72,3 @@ const ConfigurationContext = React.createContext<ConfigurationContextType>({
 });
 
 export default ConfigurationContext;
-// const handleSavedList: (allData: VideoType[]) => void

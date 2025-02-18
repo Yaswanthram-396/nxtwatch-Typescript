@@ -41,7 +41,12 @@ class VideosInHome extends React.Component<{}, VideosInHomeState> {
     const { banner } = this.state;
     const { mode } = this.context; 
     return (
-      <SidebarSideContent mode={mode}>
+      <SidebarSideContent mode={mode} 
+      data-testid="sidebar-content"
+      
+      >
+       {
+        banner &&
         <SideContentBanner banner={banner}>
           <InnerContainer>
             <AdContent>
@@ -54,9 +59,9 @@ class VideosInHome extends React.Component<{}, VideosInHomeState> {
               </p>
               <AdBtn>GET IT NOW</AdBtn>
             </AdContent>
-            <CloseIcon as={FaTimes} onClick={this.handleCloseBanner} />
+            <CloseIcon as={FaTimes} data-testid="close-icon" onClick={this.handleCloseBanner} />
           </InnerContainer>
-        </SideContentBanner>
+        </SideContentBanner>}
         <GetApiRes />
       </SidebarSideContent>
     );

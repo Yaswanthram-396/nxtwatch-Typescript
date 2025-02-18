@@ -284,8 +284,10 @@ class GetApiRes extends React.Component<{}, GetApiResState> {
               value={searchInput}
               placeholder="Search"
             />
-            <SubmitDiv  onClick={this.handleSubmit}>
-              <FaSearch />
+            <SubmitDiv  onClick={this.handleSubmit} 
+              data-testid="search-videos"
+              >
+              <FaSearch data-testid="search-icon"/>
             </SubmitDiv>
           </Form>
 

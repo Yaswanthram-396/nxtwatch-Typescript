@@ -3,13 +3,7 @@ import { render, screen, fireEvent, waitFor } from "@testing-library/react";
 import Cookies from "js-cookie";
 import VideosInHome from "./index";
 import ConfigurationContext, { ConfigurationContextType } from "../../../context";
-// import { json } from "react-router-dom";
 
-// Mock window.location to prevent actual navigation
-// Mock window.location to prevent actual navigation
-(global as any).location = { href: "" };
-
-window.location = { href: "" } as Location; 
 
 jest.mock("js-cookie", () => ({
   get: jest.fn(),
@@ -23,9 +17,6 @@ jest.mock("js-cookie", () => ({
   }));
   
 describe("Render the sidebar in home in the sidebarSidecontext render", () => {
-  // beforeEach(() => {
-
-  //   });
 
   test("rendering the login component", () => {
     render(<VideosInHome />);

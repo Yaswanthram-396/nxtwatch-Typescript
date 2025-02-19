@@ -41,7 +41,7 @@ describe("Render the sidebar in home in the sidebarSidecontext render", () => {
         handleMode: jest.fn(),
         handlePage: jest.fn()
       };
-      
+     
         const { rerender } = render(
       <ConfigurationContext.Provider value={mockContext}>
         <VideosInHome />

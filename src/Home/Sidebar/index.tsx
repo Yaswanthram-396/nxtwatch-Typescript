@@ -21,7 +21,7 @@ import {
 } from "./styled";
 interface StyleState {
   display: string;
-  position?: string;
+  position?: "static" | "relative" | "absolute" | "fixed" | "sticky" | undefined;
   zIndex?: number;
   top?: string;
   left?: string;
@@ -31,7 +31,7 @@ interface StyleState {
 
 
 
-export function Panel({ props, setting }:StyleState) {
+export function Panel({ props, setting }: { props: StyleState; setting: (state: StyleState) => void }) {
   const { mode, handlePage } = useContext(ConfigurationContext);
   const pagein = localStorage.getItem("pagein");
   const darkMode = { color: "white" };
@@ -53,33 +53,35 @@ export function Panel({ props, setting }:StyleState) {
     <Headers style={props} data-testid="panel-props">
       <div style={{ display: "flex", flexDirection: "column" }}>
         <div style={{ textAlign: "end", paddingRight: "5%", paddingTop: "3%" }}>
-          {/* <CloseIcon onClick={() => setting({ display: "none" })} /> */}
           <CloseIcon
             as={FaTimes}
+            data-testid="closeIcon-sidebar"
             onClick={() => setting({ display: "none" })}
           />
         </div>
         <EntireSide>
           <SidePanelOptionsContainer>
-            <Link to="/NxtWatch/Home">
+            <Link to="/NxtWatch/Home" data-testid="home-panel" onClick={() => Num("Home")}>
               <SidePanelOptions
                 mode={mode}
                 check={pagein === "Home"}
-                onClick={() => Num("Home")}
+                
+               
               >
                 <FaHome
                   style={{ color: pagein === "Home" ? "red" : mode ? "#fff" : "#000" }}
                 />
-                <SidePanelOptionsDivert mode={mode}>
+                <SidePanelOptionsDivert mode={mode}  >
                   Home
                 </SidePanelOptionsDivert>
               </SidePanelOptions>
             </Link>
-            <Link to="/NxtWatch/Trending">
+            <Link to="/NxtWatch/Trending"  onClick={() => Num("Trending")}
+                data-testid="trending-panel">
               <SidePanelOptions
                 mode={mode}
                 check={pagein === "Trending"}
-                onClick={() => Num("Trending")}
+               
               >
                 <FaFire
                   style={{ color: pagein === "Trending" ? "red" : mode ? "#fff" : "#000" }}
@@ -89,11 +91,12 @@ export function Panel({ props, setting }:StyleState) {
                 </SidePanelOptionsDivert>
               </SidePanelOptions>
             </Link>
-            <Link to="/NxtWatch/Gaming">
+            <Link to="/NxtWatch/Gaming"  onClick={() => Num("Gaming")}
+                data-testid="gaming-panel">
               <SidePanelOptions
                 mode={mode}
                 check={pagein === "Gaming"}
-                onClick={() => Num("Gaming")}
+               
               >
                 <FaGamepad
                   style={{ color: pagein === "Gaming" ? "red" : mode ? "#fff" : "#000" }}
@@ -103,11 +106,12 @@ export function Panel({ props, setting }:StyleState) {
                 </SidePanelOptionsDivert>
               </SidePanelOptions>
             </Link>
-            <Link to="/NxtWatch/Saved">
+            <Link to="/NxtWatch/Saved" onClick={() => Num("Saved")}
+                data-testid="saved-panel">
               <SidePanelOptions
                 mode={mode}
                 check={pagein === "Saved"}
-                onClick={() => Num("Saved")}
+                
               >
                 <MdVideoLibrary
                   style={{ color: pagein === "Saved" ? "red" : mode ? "#fff" : "#000" }}
@@ -118,23 +122,26 @@ export function Panel({ props, setting }:StyleState) {
               </SidePanelOptions>
             </Link>
           </SidePanelOptionsContainer>
-          <SidePanelFooter>
+          <SidePanelFooter data-testid="sidePanel-footer">
             <h2 style={mode ? darkMode : light}>CONTACT US</h2>
             <IconsContainer>
               <Icon
                 src="https://assets.ccbp.in/frontend/react-js/nxt-watch-facebook-logo-img.png"
                 alt="facebook logo"
+                data-testid="facebook-icon"
               />
               <Icon
                 src="https://assets.ccbp.in/frontend/react-js/nxt-watch-twitter-logo-img.png"
                 alt="twitter logo"
+                data-testid="twitter-icon"
               />
               <Icon
                 src="https://assets.ccbp.in/frontend/react-js/nxt-watch-linked-in-logo-img.png"
                 alt="linked in logo"
+                data-testid="linkedin-icon"
               />
             </IconsContainer>
-            <Paragraph mode={mode}>
+            <Paragraph mode={mode} data-testid="panel-paragraph">
               Enjoy! Now to see your channels and recommendations!
             </Paragraph>
           </SidePanelFooter>
@@ -143,6 +150,7 @@ export function Panel({ props, setting }:StyleState) {
     </Headers>
   );
 }
+
 // interface StyleState {
 //   display: string;
 //   position?: string;
@@ -276,113 +284,93 @@ export function Panel({ props, setting }:StyleState) {
 //   );
 // }
 
-function SidePanel({Num}:{ Num: any }) {
+interface SidePanelProps {
+  Num: React.ReactNode;
+}
+
+function SidePanel({ Num }: SidePanelProps) {
   const { mode, handlePage } = useContext(ConfigurationContext);
-  const darkMode = { color: "white" };
-  const light = { color: "black" };
   const location = useLocation();
   const pagein = localStorage.getItem("pagein");
-
+  
   useEffect(() => {
-    const currentPath = location;
-    const num = currentPath.pathname.split("/").pop();
+    const num = location.pathname.split("/").pop();
     handlePage(num);
-  }, []);
+  }, [location, handlePage]);
 
   return (
     <ContentWithPanel>
       <InnersidePanel>
         <SidePanelOptionsContainer>
-          <Link to="/NxtWatch/Home">
+              <Link to="/NxtWatch/Home" 
+              data-testid="home-sidebar"
+              onClick={() => handlePage("Home")}
+              
+              >
             <SidePanelOptions
               mode={mode}
               check={pagein === "Home"}
-              onClick={() => handlePage("Home")}
             >
-              {/* <HomeIcon as={FaHome} active={pagein === "Home"} mode={mode} /> */}
-              <FaHome
-                  style={{ color: pagein === "Home" ? "red" : mode ? "#fff" : "#000" }}
-                />
+              <FaHome style={{ color: pagein === "Home" ? "red" : mode ? "#fff" : "#000" }} />
               <SidePanelOptionsDivert mode={mode}>Home</SidePanelOptionsDivert>
             </SidePanelOptions>
           </Link>
-          <Link to="/NxtWatch/Trending">
+          <Link to="/NxtWatch/Trending"  onClick={() => handlePage("Trending")}
+              data-testid="trending-sidebar">
             <SidePanelOptions
               mode={mode}
               check={pagein === "Trending"}
-              onClick={() => handlePage("Trending")}
+             
             >
-              {/* <TrendingIcon
-                as={FaFire}
-                active={pagein === "Trending"}
-                mode={mode}
-              /> */}
-              <FaFire
-                  style={{ color: pagein === "Trending" ? "red" : mode ? "#fff" : "#000" }}
-                />
-              <SidePanelOptionsDivert mode={mode}>
-                Trending
-              </SidePanelOptionsDivert>
+              <FaFire style={{ color: pagein === "Trending" ? "red" : mode ? "#fff" : "#000" }} />
+              <SidePanelOptionsDivert mode={mode}>Trending</SidePanelOptionsDivert>
             </SidePanelOptions>
           </Link>
-          <Link to="/NxtWatch/Gaming">
+          <Link to="/NxtWatch/Gaming" onClick={() => handlePage("Gaming")}
+              data-testid="gaming-sidebar">
             <SidePanelOptions
               mode={mode}
               check={pagein === "Gaming"}
-              onClick={() => handlePage("Gaming")}
+              
             >
-              {/* <GamingIcon
-                as={FaGamepad}
-                active={pagein === "Gaming"}
-                mode={mode}
-              /> */}
-              <FaGamepad
-                  style={{ color: pagein === "Gaming" ? "red" : mode ? "#fff" : "#000" }}
-                />
-              <SidePanelOptionsDivert mode={mode}>
-                Gaming
-              </SidePanelOptionsDivert>
+              <FaGamepad style={{ color: pagein === "Gaming" ? "red" : mode ? "#fff" : "#000" }} />
+              <SidePanelOptionsDivert mode={mode}>Gaming</SidePanelOptionsDivert>
             </SidePanelOptions>
           </Link>
-          <Link to="/NxtWatch/Saved">
+          <Link to="/NxtWatch/Saved"  onClick={() => handlePage("Saved")}
+              data-testid="saved-sidebar">
             <SidePanelOptions
               mode={mode}
               check={pagein === "Saved"}
-              onClick={() => handlePage("Saved")}
+             
             >
-              {/* <SavedIcon
-                as={MdVideoLibrary}
-                active={pagein === "Saved"}
-                mode={mode}
-              /> */}
-              <MdVideoLibrary
-                  style={{ color: pagein === "Saved" ? "red" : mode ? "#fff" : "#000" }}
-                />
-              <SidePanelOptionsDivert mode={mode}>
-                Saved videos
-              </SidePanelOptionsDivert>
+              <MdVideoLibrary style={{ color: pagein === "Saved" ? "red" : mode ? "#fff" : "#000" }} />
+              <SidePanelOptionsDivert mode={mode}>Saved videos</SidePanelOptionsDivert>
             </SidePanelOptions>
           </Link>
         </SidePanelOptionsContainer>
         <SidePanelFooter>
-          <h2 style={mode ? darkMode : light}>CONTACT US</h2>
+          <h2 style={{ color: mode ? "white" : "black" }}>CONTACT US</h2>
           <IconsContainer>
             <Icon
               src="https://assets.ccbp.in/frontend/react-js/nxt-watch-facebook-logo-img.png"
               alt="facebook logo"
+              data-testid="facebook-icon"
             />
             <Icon
               src="https://assets.ccbp.in/frontend/react-js/nxt-watch-twitter-logo-img.png"
               alt="twitter logo"
+              data-testid="twitter-icon"
             />
             <Icon
               src="https://assets.ccbp.in/frontend/react-js/nxt-watch-linked-in-logo-img.png"
-              alt="linked in logo"
+              alt="linkedin logo"
+              data-testid="linkedin-icon"
             />
           </IconsContainer>
-          <Paragraph mode={mode}>
+          <p style={{ color: mode ? "white" : "black" }}>
             Enjoy! Now to see your channels and recommendations!
-          </Paragraph>
+          </p>
         </SidePanelFooter>
       </InnersidePanel>
       {Num}

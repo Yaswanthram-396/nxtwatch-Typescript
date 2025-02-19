@@ -23,13 +23,14 @@ import {
 // Refined StyleState interface
 interface StyleState {
   display: string;
-  position?: string;
+  position?: "static" | "relative" | "absolute" | "fixed" | "sticky" | undefined;
   zIndex?: number;
   top?: string;
   left?: string;
   backgroundColor?: string;
-  "@media (min-width: 771px)"?: { display: string };
+  [key: string]: any; // To allow media query or additional keys
 }
+
 
 const Navbar = () => {
   const { mode, handleMode } = useContext(ConfigurationContext);
@@ -92,7 +93,7 @@ const Navbar = () => {
           />
         </Link>
 
-        <Panel props={stile} setting={setStile} display={""} />
+        <Panel props={stile} setting={setStile} />
         <NavbarList>
           <ListElement onClick={handleSet}>
             {mode ? <FaSun title="Sun Icon" data-testid="darkMode" className="lightModeIcon" /> : <FaMoon title="Moon Icon" data-testid="lightMode"/>}

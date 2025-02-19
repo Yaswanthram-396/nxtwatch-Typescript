@@ -27,7 +27,7 @@ interface UserLoginState {
 
 class LoginPage extends React.Component<{}, UserLoginState> {
   static contextType = ConfigurationContext;
-declare context:   React.ContextType<typeof ConfigurationContext>;
+declare context:   ConfigurationContextType;
 
   constructor(props: {}) {
     super(props);

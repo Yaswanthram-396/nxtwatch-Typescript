@@ -1,6 +1,6 @@
 import React from "react";
 import Cookies from "js-cookie";
-import ConfigurationContext from "../context";
+import ConfigurationContext, { ConfigurationContextType } from "../context";
 import {
   NxwLogin,
   LoginField,
@@ -27,14 +27,14 @@ interface UserLoginState {
 
 class LoginPage extends React.Component<{}, UserLoginState> {
   static contextType = ConfigurationContext;
-  context!: React.ContextType<typeof ConfigurationContext>;
+declare context:   React.ContextType<typeof ConfigurationContext>;
 
   constructor(props: {}) {
     super(props);
     this.state = {
       username: "",
       password: "",
-      showPass: false,
+      showPass: false,  
       error: false,
     };
   }
@@ -143,7 +143,7 @@ console.log(error)
             </LoginButton>
 
             {/* Error Message */}
-            {error && <Error>*Username or Password didn't match</Error>}
+            {error && <Error data-testid="Password-didn't-match">*Username or Password didn't match</Error>}
           </LoginInputFildsBtn>
         </LoginField>
       </NxwLogin>

@@ -50,7 +50,7 @@ export function Panel({ props, setting }:StyleState) {
   };
 
   return (
-    <Headers style={props}>
+    <Headers style={props} data-testid="panel-props">
       <div style={{ display: "flex", flexDirection: "column" }}>
         <div style={{ textAlign: "end", paddingRight: "5%", paddingTop: "3%" }}>
           {/* <CloseIcon onClick={() => setting({ display: "none" })} /> */}

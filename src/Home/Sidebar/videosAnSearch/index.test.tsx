@@ -13,72 +13,47 @@ jest.mock("js-cookie", () => ({
   remove: jest.fn(),
 }));
 
-jest.mock('react-router-dom', () => ({
-  ...jest.requireActual('react-router-dom'),
-  Link: ({ children, to }: { children: React.ReactNode; to: string }) => <a href={to}>{children}</a>
-}));
-
-
-
+global.fetch = jest.fn();
 
 describe("Render the videos from the API", () => {
   test("To check whether the search bar and icon present", () => {
     
     render(
-     
       <GetApiRes />
-
     );
     expect(screen.getByPlaceholderText("Search")).toBeInTheDocument();
     expect(screen.getByTestId("search-icon")).toBeInTheDocument();
   });
   test("testing the videos API", async () => {
-    global.fetch = jest.fn(() =>
-      Promise.resolve(
-        new Response(
-          JSON.stringify({
-            videos: [
-              {
-                id: "1",
-                thumbnail_url: "https://example.com/video1.jpg",
-                title: "Test Video",
-                channel: {
-                  name: "Test Channel",
-                  profile_image_url: "https://example.com/profile.jpg",
-                },
-                view_count: 1000,
-                published_at: "1 day ago",
-              },
-            ],
-          }),
+    (global.fetch as jest.Mock).mockResolvedValueOnce({
+      ok: true,
+      json: jest.fn().mockResolvedValue({
+        videos: [
           {
-            status: 200,
-          }
-        )
-      )
-    );
-  
-    const mockContext = {
-      savedList: [],
-      mode: false,
-      pagein: "Home",
-      handleSavedList: jest.fn(),
-      handleMode: jest.fn(),
-      handlePage: jest.fn(),
-    };
-  
-    
+            id: "1",
+            title: "Test Video",
+            thumbnail_url: "sample.jpg",
+            channel: { name: "Test Channel", profile_image_url: "profile.jpg" },
+            view_count: 1000,
+            published_at: "1 day ago",
+          },
+        ],
+      }),
+    })
+
     render(
-      <ConfigurationContext.Provider value={mockContext}>
+      <MemoryRouter>
+        
         <GetApiRes />
-      </ConfigurationContext.Provider>
+      </MemoryRouter>
     );
   
     
     await waitFor(() => {
       expect(screen.queryByTestId("loader")).not.toBeInTheDocument();
     });
-  
+
+
     
     expect(await screen.findByText("Test Video")).toBeInTheDocument();
     expect(await screen.findByText("Test Channel")).toBeInTheDocument();

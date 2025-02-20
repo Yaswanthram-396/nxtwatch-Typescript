@@ -107,6 +107,7 @@
 //                 radius="9"
 //                 color="blue"
 //                 ariaLabel="three-dots-loading"
+
 //                 visible={true}
 //               />
 //             </LoaderContainer>
@@ -299,6 +300,7 @@ class GetApiRes extends React.Component<{}, GetApiResState> {
                 radius="9"
                 color="blue"
                 ariaLabel="three-dots-loading"
+
                 visible={true}
               />
             </LoaderContainer>

@@ -63,7 +63,7 @@ export default function Saved() {
             <VideoContainer darkMode={mode}>
               {savedList.map((item:VideoType) => (
                 <Link to={`/video/${item.id}`} key={item.id}>
-                  <BGContainer2>
+                  <BGContainer2  data-testid={item.id}>
                     <VideoPhoto src={item.thumbnail_url} alt="thumbnail_url" />
                     <Outer>
                       <Inner>

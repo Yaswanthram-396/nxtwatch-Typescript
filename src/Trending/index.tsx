@@ -24,6 +24,8 @@ const Trending = () => {
   const [allData, setData] = useState([]);
   const [loading, setloading] = useState(false);
   const { mode } = useContext(ConfigurationContext);
+  const[error, setError] = useState(false)
+  
   console.log(mode);
   const fetchData = async () => {
     const cookieToken = Cookies.get("jwt_token");
@@ -45,6 +47,8 @@ const Trending = () => {
 
       setloading(false);
     } catch (error) {
+      setError(true)
+      
       // console.error("Error fetching data:", error.message);
       setloading(false);
     }
@@ -57,6 +61,7 @@ const Trending = () => {
   return (
     <TrendingVideosContainer>
       <TrendingHeader
+      data-testid="trending-mode"
         style={
           mode
             ? { backgroundColor: "rgb(24,24,24)" }
@@ -81,6 +86,9 @@ const Trending = () => {
         </TrendingTitle>
       </TrendingHeader>
       {!loading ? (
+        error ? (
+          <p className="error">Something went wrong. Please try again!</p>
+        ) : 
         allData.length > 0 && (
           <VideoDetails style={mode ? { backgroundColor: "rgb(0,0,0)" } : {}}>
             {allData.map((item:InterfaceItem) => (
@@ -106,13 +114,15 @@ const Trending = () => {
           </VideoDetails>
         )
       ) : (
-        <LoaderContainer>
+        <LoaderContainer data-testid="loader">
           <ThreeDots
             height="80"
             width="80"
             radius="9"
             color="blue"
             ariaLabel="three-dots-loading"
+
+            
             visible={true}
           />
         </LoaderContainer>

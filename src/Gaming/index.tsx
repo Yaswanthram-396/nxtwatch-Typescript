@@ -37,6 +37,8 @@ export default function Gaming() {
   const [allData, setData] = useState([]);
   const [loading, setloading] = useState(false);
   const { mode } = useContext(ConfigurationContext);
+  const[error, setError] = useState(false)
+  
 
   const fetchData = async () => {
     const cookieToken = Cookies.get("jwt_token");
@@ -57,6 +59,7 @@ export default function Gaming() {
       setData(data.videos);
       setloading(false);
     } catch (error) {
+      setError(true)
       // console.error("Error fetching data:", error.message);
       setloading(false);
     }
@@ -75,6 +78,7 @@ export default function Gaming() {
         <TextTrend darkMode={mode}>Gaming</TextTrend>
       </TendingIcon> */}
       <TrendingHeader
+      data-testid="Gaming-mode"
         style={
           mode
             ? { backgroundColor: "rgb(24,24,24)" }
@@ -100,8 +104,11 @@ export default function Gaming() {
       </TrendingHeader>
 
       {!loading ? (
+        error ? (
+          <p className="error">Something went wrong. Please try again!</p>
+        ) : 
         allData.length > 0 && (
-          <GamingVideo darkMode={mode}>
+          <GamingVideo darkMode={mode} data-testid="gaming-videos">
             {allData.map((item: InterfaceItem) => (
               <LinkStyled to={`/video/${item.id}`} as={Link} key={item.id}>
                 <BGContainerGaming>

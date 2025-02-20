@@ -44,6 +44,7 @@ type VideoDetails = {
 export default function VideoPlayerComponent() {
   const [isSaved, setIsSaved] = useState(false);
   const [disliked, setDislike] = useState(false);
+  const [error, setError] = useState(false);  
   const [disLikeList, setDisLikeList] = useState<VideoDetails[]>(() => {
     const savedItems = localStorage.getItem("dislikeList");
     return savedItems ? JSON.parse(savedItems) : [];
@@ -70,52 +71,81 @@ export default function VideoPlayerComponent() {
     }
   };
 
+
+
+
+
+
   const onClickHandleDislikeList = () => {
-    if (allData) {
-      const isAlreadyDisliked = disLikeList.some((item) => item.id === id);
+    if (!allData) return;
 
+    setDisLikeList(prevList => {
+      const isAlreadyDisliked = prevList.some(item => item.id === allData.id);
+      
       if (isAlreadyDisliked) {
-        const updatedDislikeList = disLikeList.filter((item) => item.id !== id);
-        setDisLikeList(updatedDislikeList);
-        localStorage.setItem("dislikeList", JSON.stringify(updatedDislikeList));
+        const newList = prevList.filter(item => item.id !== allData.id);
+        localStorage.setItem("dislikeList", JSON.stringify(newList));
         setDislike(false);
+        return newList;
       } else {
-        const updatedDislikeList = [...disLikeList, allData];
-        setDisLikeList(updatedDislikeList);
-        localStorage.setItem("dislikeList", JSON.stringify(updatedDislikeList));
-        setDislike(true);
-
-        const updatedLikeList = likeList.filter((item) => item.id !== id);
-        setLikeList(updatedLikeList);
-        localStorage.setItem("likeList", JSON.stringify(updatedLikeList));
+        setLikeList(prevLikeList => {
+          const newLikeList = prevLikeList.filter(item => item.id !== allData.id);
+          localStorage.setItem("likeList", JSON.stringify(newLikeList));
+          return newLikeList;
+        });
         setLiked(false);
+        
+        const newList = [...prevList, allData];
+        localStorage.setItem("dislikeList", JSON.stringify(newList));
+        setDislike(true);
+        return newList;
       }
-    }
+    });
   };
 
   const onClickHandleLikeList = () => {
-    if (allData) {
-      const isAlreadyLiked = likeList.some((item) => item.id === id);
+    if (!allData) return;
 
+    setLikeList(prevList => {
+      const isAlreadyLiked = prevList.some(item => item.id === allData.id);
+      
       if (isAlreadyLiked) {
-        const updatedLikeList = likeList.filter((item) => item.id !== id);
-        setLikeList(updatedLikeList);
-        localStorage.setItem("likeList", JSON.stringify(updatedLikeList));
+        const newList = prevList.filter(item => item.id !== allData.id);
+        localStorage.setItem("likeList", JSON.stringify(newList));
         setLiked(false);
+        return newList;
       } else {
-        const updatedLikeList = [...likeList, allData];
-        setLikeList(updatedLikeList);
-        localStorage.setItem("likeList", JSON.stringify(updatedLikeList));
-        setLiked(true);
-
-        const updatedDislikeList = disLikeList.filter((item) => item.id !== id);
-        setDisLikeList(updatedDislikeList);
-        localStorage.setItem("dislikeList", JSON.stringify(updatedDislikeList));
+        setDisLikeList(prevDislikeList => {
+          const newDislikeList = prevDislikeList.filter(item => item.id !== allData.id);
+          localStorage.setItem("dislikeList", JSON.stringify(newDislikeList));
+          return newDislikeList;
+        });
         setDislike(false);
+        
+        const newList = [...prevList, allData];
+        localStorage.setItem("likeList", JSON.stringify(newList));
+        setLiked(true);
+        return newList;
       }
-    }
+    });
   };
+  useEffect(() => {
+    fetchData();
+  }, [id]);
 
+  useEffect(() => {
+    const savedList = JSON.parse(localStorage.getItem("savedList") || "[]") as VideoDetails[];
+    const disList = JSON.parse(localStorage.getItem("dislikeList") || "[]") as VideoDetails[];
+    const likeList = JSON.parse(localStorage.getItem("likeList") || "[]") as VideoDetails[];
+  
+    setIsSaved(savedList.some((item) => item.id === id));
+    setDislike(disList.some((item) => item.id === id));
+    setLiked(likeList.some((item) => item.id === id));
+  }, [location, id]);
+  
+  
+  
+  
   const fetchData = async () => {
     const cookieToken = Cookies.get("jwt_token");
     setLoading(true);
@@ -136,23 +166,11 @@ export default function VideoPlayerComponent() {
       setLoading(false);
     } catch (error) {
       console.error("Error fetching data:", (error as Error).message);
+      setError(true)
       setLoading(false);
     }
   };
 
-  useEffect(() => {
-    fetchData();
-  }, [id]);
-
-  useEffect(() => {
-    const savedList = JSON.parse(localStorage.getItem("savedList") || "[]") as VideoDetails[];
-    const disList = JSON.parse(localStorage.getItem("dislikeList") || "[]") as VideoDetails[];
-    const likeList = JSON.parse(localStorage.getItem("likeList") || "[]") as VideoDetails[];
-
-    setIsSaved(savedList.some((item) => item.id === id));
-    setDislike(disList.some((item) => item.id === id));
-    setLiked(likeList.some((item) => item.id === id));
-  }, [location, id]);
 
   const videoUrl = allData?.video_url;
   const videoId = videoUrl ? videoUrl.split("=")[1] : null;
@@ -160,6 +178,7 @@ export default function VideoPlayerComponent() {
   return (
     <>
       {!loading ? (
+        error?<p>Video not avilable</p>:
         <TotalVideo mode={mode}>
           <VideoPlayer>
             <VideoIframe
@@ -177,13 +196,13 @@ export default function VideoPlayerComponent() {
                   <p>{allData?.published_at}</p>
                 </ViewCount>
                 <Liked>
-                  <Interaction onClick={onClickHandleLikeList} active={liked}>
+                  <Interaction onClick={onClickHandleLikeList} data-testid="like" active={liked}>
                     <FaThumbsUp /> Like
                   </Interaction>
-                  <Interaction onClick={onClickHandleDislikeList} active={disliked}>
+                  <Interaction onClick={onClickHandleDislikeList} data-testid="dislike" active={disliked}>
                     <FaThumbsDown /> Dislike
                   </Interaction>
-                  <Interaction onClick={onClickHandleSavedList} active={isSaved}>
+                  <Interaction data-testid="saved-element" onClick={onClickHandleSavedList} active={isSaved}>
                     <FaBookmark /> {isSaved ? "Saved" : "Save"}
                   </Interaction>
                 </Liked>
@@ -191,11 +210,11 @@ export default function VideoPlayerComponent() {
 
               {allData?.channel && (
                 <ProfileWrapper>
-                  <Image src={allData.channel.profile_image_url} alt="profile_image_url" />
+                  <Image   data-testid="channel-profile-image" src={allData.channel.profile_image_url} alt="profile_image_url" />
                   <ProfileDescription>
-                    <h3>{allData.channel.name}</h3>
-                    <DarkParagraph>{allData.description}</DarkParagraph>
-                    <p>{`${allData.channel.subscriber_count} Subscribers`}</p>
+                    <h3 data-testid="channel-name">{allData.channel.name}</h3>
+                    <DarkParagraph data-testid="video-description">{allData.description}</DarkParagraph>
+                    <p  data-testid="view-count">{`${allData.channel.subscriber_count} Subscribers`}</p>
                   </ProfileDescription>
                 </ProfileWrapper>
               )}
@@ -203,7 +222,8 @@ export default function VideoPlayerComponent() {
           </VideoPlayer>
         </TotalVideo>
       ) : (
-        <LoaderContainer>
+            
+        <LoaderContainer data-testid="loader">
           <ThreeDots
             height="80"
             width="80"

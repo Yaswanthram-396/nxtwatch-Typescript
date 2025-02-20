@@ -95,7 +95,7 @@ const Navbar = () => {
 
         <Panel props={stile} setting={setStile} />
         <NavbarList>
-          <ListElement onClick={handleSet}>
+          <ListElement data-testid="theme-icon" onClick={handleSet}>
             {mode ? <FaSun title="Sun Icon" data-testid="darkMode" className="lightModeIcon" /> : <FaMoon title="Moon Icon" data-testid="lightMode"/>}
           </ListElement>
           <ListElement>

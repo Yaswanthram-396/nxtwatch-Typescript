@@ -89,13 +89,12 @@ describe("Trending Component", () => {
     });
   });
   test("handle Api error", async () => {
-    global.fetch = jest.fn(() =>
-      Promise.resolve(
-        new Response(JSON.stringify({ error: "API Error" }), {
-            status: 401,
-        })
-      )
-    );
+    global.fetch = jest.fn().mockResolvedValueOnce({
+      ok: false, 
+      status: 401,
+      json: jest.fn().mockResolvedValue({ error: "API Error" }),
+    });
+  
    
     render(
       <MemoryRouter>

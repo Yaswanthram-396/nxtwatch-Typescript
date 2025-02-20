@@ -145,26 +145,26 @@ export const CloseIcon = styled.div`
   cursor: pointer;
 `;
 
-interface IconProps {
-  active?: boolean;
-  mode?: boolean | string;
-}
+// interface IconProps {
+//   active?: boolean;
+//   mode?: boolean | string;
+// }
 
 // Generic styled component with icon support
-export const createStyledIcon = <T extends IconType>(Icon: T) => styled(Icon)<IconProps>`
-  color: ${({ active, mode }) => {
-    if (active) return "red";
-    if (mode === 'dark' || mode === true) return "#fff";
-    return "#000";
-  }};
-  cursor: pointer;
-`;
+//  const createStyledIcon = <T extends IconType>(Icon: T) => styled(Icon)<IconProps>`
+//   color: ${({ active, mode }) => {
+//     if (active) return "red";
+//     if (mode === 'dark' || mode === true) return "#fff";
+//     return "#000";
+//   }};
+//   cursor: pointer;
+// `;
 
 // Update your existing styled components
-export const HomeIcon = createStyledIcon(FaHome);
-export const TrendingIcon = createStyledIcon(FaFire);
-export const GamingIcon = createStyledIcon(FaGamepad);
-export const SavedIcon = createStyledIcon(MdVideoLibrary);
+// export const HomeIcon = createStyledIcon(FaHome);
+// export const TrendingIcon = createStyledIcon(FaFire);
+// export const GamingIcon = createStyledIcon(FaGamepad);
+// export const SavedIcon = createStyledIcon(MdVideoLibrary);
 
 // For Panel component
 export interface PanelProps {

@@ -5,25 +5,29 @@ import Gaming from "./index";
 import ConfigurationContext from "../context";
 
 describe("Gaming Component", () => {
-  beforeEach(() => {
-    // global.fetch = jest.fn(() =>
-    //   Promise.resolve({
-    //     ok: true,
-    //     json: () =>
-    //       Promise.resolve({
-    //         videos: [
-    //           {
-    //             id: "b214dc8a-b126-4d15-8523-d37404318347",
-    //             thumbnail_url:
-    //               "https://assets.ccbp.in/frontend/react-js/nxt-watch/drop-stack-ball-img.png",
-    //             title: "Drop Stack Ball",
-    //             view_count: "44K",
-    //           },
-    //         ],
-    //       }),
-    //   })
-    // );
-global.fetch = jest.fn();
+  // beforeEach(() => {
+  //   // global.fetch = jest.fn(() =>
+  //   //   Promise.resolve({
+  //   //     ok: true,
+  //   //     json: () =>
+  //   //       Promise.resolve({
+  //   //         videos: [
+  //   //           {
+  //   //             id: "b214dc8a-b126-4d15-8523-d37404318347",
+  //   //             thumbnail_url:
+  //   //               "https://assets.ccbp.in/frontend/react-js/nxt-watch/drop-stack-ball-img.png",
+  //   //             title: "Drop Stack Ball",
+  //   //             view_count: "44K",
+  //   //           },
+  //   //         ],
+  //   //       }),
+  //   //   })
+  //   // );
+
+  // });
+
+  test("renders Gaming text and applies theme mode correctly", async () => {
+    global.fetch = jest.fn();
    
     (global.fetch as jest.Mock).mockResolvedValueOnce({
       ok: true,
@@ -39,9 +43,6 @@ global.fetch = jest.fn();
         ],
       }),
     })
-  });
-
-  test("renders Gaming text and applies theme mode correctly", async () => {
     const { rerender } = render(
       <MemoryRouter>
         <ConfigurationContext.Provider value={{  savedList: [],
@@ -93,6 +94,22 @@ global.fetch = jest.fn();
   });
 
   test("renders gaming-videos container after data loads", async () => {
+    global.fetch = jest.fn();
+   
+    (global.fetch as jest.Mock).mockResolvedValueOnce({
+      ok: true,
+      json: jest.fn().mockResolvedValue({
+        videos: [
+          {
+            id: "b214dc8a-b126-4d15-8523-d37404318347",
+                thumbnail_url:
+                  "https://assets.ccbp.in/frontend/react-js/nxt-watch/drop-stack-ball-img.png",
+                title: "Drop Stack Ball",
+                view_count: "44K",
+          },
+        ],
+      }),
+    })
     render(
       <MemoryRouter>
         <ConfigurationContext.Provider value={{  savedList: [],
@@ -119,6 +136,22 @@ global.fetch = jest.fn();
   });
 
   test("applies dark mode styles to gaming-videos correctly", async () => {
+    global.fetch = jest.fn();
+   
+    (global.fetch as jest.Mock).mockResolvedValueOnce({
+      ok: true,
+      json: jest.fn().mockResolvedValue({
+        videos: [
+          {
+            id: "b214dc8a-b126-4d15-8523-d37404318347",
+                thumbnail_url:
+                  "https://assets.ccbp.in/frontend/react-js/nxt-watch/drop-stack-ball-img.png",
+                title: "Drop Stack Ball",
+                view_count: "44K",
+          },
+        ],
+      }),
+    })
     render(
       <MemoryRouter>
         <ConfigurationContext.Provider value={{  savedList: [],
@@ -142,36 +175,39 @@ global.fetch = jest.fn();
   });
 
   test("handle API error", async () => {
-    
-    global.fetch = jest.fn(() =>
-      Promise.resolve(
-        new Response(JSON.stringify({ error: "API Error" }), {
-          status: 401, 
-          
-        })
-      )
-    );
+    global.fetch = jest.fn().mockResolvedValueOnce({
+      ok: false, 
+      status: 401,
+      json: jest.fn().mockResolvedValue({ error: "API Error" }),
+    });
+  
     render(
       <MemoryRouter>
-        <ConfigurationContext.Provider value={{  savedList: [],
-  mode: false,
-  pagein: "Home",
-  handleSavedList: jest.fn(),
-  handleMode: jest.fn(),
-  handlePage: jest.fn(),}}>
+        <ConfigurationContext.Provider
+          value={{
+            savedList: [],
+            mode: false,
+            pagein: "Home",
+            handleSavedList: jest.fn(),
+            handleMode: jest.fn(),
+            handlePage: jest.fn(),
+          }}
+        >
           <Gaming />
         </ConfigurationContext.Provider>
       </MemoryRouter>
     );
-
+  
     await waitFor(() => {
       expect(
         screen.getByText("Something went wrong. Please try again!")
       ).toBeInTheDocument();
     });
-
+  
     await waitFor(() => {
       expect(screen.queryByTestId("gaming-videos")).not.toBeInTheDocument();
     });
   });
+  
+  
 });

@@ -76,10 +76,8 @@ context!: ConfigurationContextType;
 
       window.location.href = "/NxtWatch/Home";
     } catch (error) {
-      console.log("There was a problem with the login request:", error);
-      this.setState((prevState) => ({
-        ...prevState,
-        error: !error,
+      this.setState(() => ({
+        error: true,
       }));
     }
   };

@@ -240,14 +240,14 @@ describe("SidePanel", () => {
     fireEvent.click(screen.getByTestId("home-panel"));
     expect(mockHandlePage).toHaveBeenCalledWith("Home");
 
-    // fireEvent.click(screen.getByTestId("trending-panel"));
-    // expect(mockHandlePage).toHaveBeenCalledWith("Trending");
+    fireEvent.click(screen.getByTestId("trending-panel"));
+    expect(mockHandlePage).toHaveBeenCalledWith("Trending");
 
-    // fireEvent.click(screen.getByTestId("gaming-panel"));
-    // expect(mockHandlePage).toHaveBeenCalledWith("Gaming");
+    fireEvent.click(screen.getByTestId("gaming-panel"));
+    expect(mockHandlePage).toHaveBeenCalledWith("Gaming");
 
-    // fireEvent.click(screen.getByTestId("saved-panel"));
-    // expect(mockHandlePage).toHaveBeenCalledWith("Saved");
+    fireEvent.click(screen.getByTestId("saved-panel"));
+    expect(mockHandlePage).toHaveBeenCalledWith("Saved");
   });
 
   test("closes sidebar when close icon is clicked", async () => {
@@ -259,7 +259,7 @@ describe("SidePanel", () => {
       top?: string;
       left?: string;
       backgroundColor?: string;
-      [key: string]: any; // To allow media query or additional keys
+      [key: string]: any; 
     }
     const styleSettings:StyleState = {
       display: "block",

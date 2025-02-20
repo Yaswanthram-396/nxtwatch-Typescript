@@ -53,6 +53,7 @@ export default function Gaming() {
       });
 
       if (!response.ok) {
+        setError(true)
         throw new Error("Failed to fetch data");
       }
       const data = await response.json();
@@ -60,7 +61,6 @@ export default function Gaming() {
       setloading(false);
     } catch (error) {
       setError(true)
-      // console.error("Error fetching data:", error.message);
       setloading(false);
     }
   };

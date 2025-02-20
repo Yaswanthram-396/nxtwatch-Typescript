@@ -246,15 +246,16 @@ class GetApiRes extends React.Component<{}, GetApiResState> {
           },
         }
       );
-
-      if (!response.ok) {
+      console.log(response.status)
+      // if (response.status !== 200) {
+      if(!response.ok){
         throw new Error("Failed to fetch data");
       }
 
       const data = await response.json();
       this.setState({ DataApi: data, loading: false });
     } catch (error) {
-      // console.error("Error fetching data:", error.message);
+      
       this.setState({ loading: false });
     }
   };

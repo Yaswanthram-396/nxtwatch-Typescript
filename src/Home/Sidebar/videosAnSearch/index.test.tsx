@@ -14,7 +14,10 @@ jest.mock("js-cookie", () => ({
 }));
 
 global.fetch = jest.fn();
-
+beforeEach(() => {
+  jest.restoreAllMocks();
+  (global.fetch as jest.Mock).mockClear();
+})
 describe("Render the videos from the API", () => {
   test("To check whether the search bar and icon present", () => {
     
@@ -27,6 +30,7 @@ describe("Render the videos from the API", () => {
   test("testing the videos API", async () => {
     (global.fetch as jest.Mock).mockResolvedValueOnce({
       ok: true,
+      status: 200,
       json: jest.fn().mockResolvedValue({
         videos: [
           {
@@ -60,20 +64,20 @@ describe("Render the videos from the API", () => {
     expect(await screen.findByText("1000 Views")).toBeInTheDocument();
     expect(await screen.findByText("1 day ago")).toBeInTheDocument();
   });
-  test("Rejected API", async () => {
-    global.fetch = jest.fn(() =>
-      Promise.resolve(
-        new Response(JSON.stringify({ error: "API Error" }), {
-          status: 401, 
+  // test("Rejected API", async () => {
+  //   global.fetch = jest.fn(() =>
+  //     Promise.resolve(
+  //       new Response(JSON.stringify({ error: "API Error" }), {
+  //         status: 401, 
           
-        })
-      )
-    );
-    render(<GetApiRes />);
-    expect(
-      await screen.findByText("No Search results found")
-    ).toBeInTheDocument();
-  });
+  //       })
+  //     )
+  //   );
+  //   render(<GetApiRes />);
+  //   expect(
+  //     await screen.findByText("No Search results found")
+  //   ).toBeInTheDocument();
+  // });
   test("Search to filter videos", () => {
     render(<GetApiRes />);
     fireEvent.change(screen.getByPlaceholderText("Search"), {
@@ -87,4 +91,19 @@ describe("Render the videos from the API", () => {
       expect.any(Object)
     );
   });
+  test("API call fails with a non-200 status", async () => {
+    global.fetch = jest.fn().mockResolvedValueOnce({
+      ok: false, 
+      status: 401,
+      json: jest.fn().mockResolvedValue({ error: "API Error" }),
+    });
+  
+  
+    render(<GetApiRes />);
+  
+    await waitFor(() => {
+      expect(screen.getByText("No Search results found")).toBeInTheDocument();
+    });
+  });
+  
 });

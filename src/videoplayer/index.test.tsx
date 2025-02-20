@@ -393,5 +393,26 @@ describe("VideoPlayer", () => {
       expect(likeList).toEqual([]); 
     });
   });
+  test("handles error state when API call fail", async () => {
+    global.fetch = jest.fn().mockResolvedValueOnce({
+      ok: false, 
+      status: 401,
+      json: jest.fn().mockResolvedValue({ error: "API Error" }),
+    });
+  
 
+    render(
+      <MemoryRouter>
+        <ConfigurationContext.Provider value={{...mockContextValue,savedList: [],pagein: "Home",
+  handleMode: jest.fn(),
+  handlePage: jest.fn(),}}>
+          <VideoPlayer />
+        </ConfigurationContext.Provider>
+      </MemoryRouter>
+    );
+   
+    await waitFor(() => {
+      expect(screen.getByText("Video not avilable")).toBeInTheDocument();
+    });
+  });
 });

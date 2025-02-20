@@ -1,7 +1,5 @@
-import { FaFire, FaGamepad, FaHome } from "react-icons/fa";
 import styled from "styled-components";
-import { IconType } from 'react-icons';
-import { MdVideoLibrary } from "react-icons/md";
+
 interface props{
   check?: boolean;
   mode?: boolean;

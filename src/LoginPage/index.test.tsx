@@ -2,8 +2,7 @@ import React from "react";
 import { render, screen, fireEvent, waitFor } from "@testing-library/react";
 import LoginPage from "./index";
 import Cookies from "js-cookie";
-import { BrowserRouter, useNavigate } from "react-router-dom";
-import Home from "../Home";
+import { BrowserRouter } from "react-router-dom";
 import ConfigurationContext, { ConfigurationContextType } from "../context";
 
 

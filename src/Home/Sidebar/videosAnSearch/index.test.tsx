@@ -1,8 +1,5 @@
 import React from "react";
 import { render, screen, fireEvent, waitFor } from "@testing-library/react";
-import LoginPage from "./index"; // Import your LoginPage component
-import Cookies from "js-cookie";
-import ConfigurationContext, { ConfigurationContextType } from "../../../context";
 import GetApiRes from "./index";
 import { MemoryRouter } from "react-router-dom";
 

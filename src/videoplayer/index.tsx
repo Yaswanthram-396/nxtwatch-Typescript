@@ -21,7 +21,6 @@ import {
   LoaderContainer,
 } from "./styled";
 
-// Define types for video details
 type Channel = {
   profile_image_url: string;
   name: string;
@@ -38,7 +37,6 @@ type VideoDetails = {
   channel?: Channel;
 };
 
-// Define context type
 
 
 export default function VideoPlayerComponent() {

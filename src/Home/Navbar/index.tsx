@@ -74,8 +74,8 @@ const Navbar = () => {
           <Poper mode={mode}   data-testid="poper-logout">
             <Heading3 mode={mode}>Are you sure you want to logout?</Heading3>
             <PopBtn>
-              <CancelBtn onClick={() => setpop(false)}>Cancel</CancelBtn>
-              <ConfirmBtn onClick={handleRemove}>Confirm</ConfirmBtn>
+              <CancelBtn data-testid="cancel-button" onClick={() => setpop(false)}>Cancel</CancelBtn>
+              <ConfirmBtn data-testid="confirm-button" onClick={handleRemove}>Confirm</ConfirmBtn>
             </PopBtn>
           </Poper>
         </EntirePop>
@@ -106,7 +106,7 @@ const Navbar = () => {
             <LogoutSVG as={FaBars}  data-testid="logout-svg" onClick={handleProfile} />
           </ListElement>
           <ListElement>
-            <LogoutBtn onClick={() => setpop(!showpop)}>Log out</LogoutBtn>
+            <LogoutBtn data-testid="logout-button-nav" onClick={() => setpop(!showpop)}>Log out</LogoutBtn>
             <LogoutSVG as={FaSignOutAlt} data-testid="logout-popup" onClick={() => setpop(!showpop)} />
           </ListElement>
         </NavbarList>

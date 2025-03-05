@@ -147,36 +147,7 @@ describe("Navbar Render", () => {
     });
   });
 
-  // test("Logout panel styles are applied correctly in mobile view", async() => {
 
-  //   render(
-  //     <MemoryRouter>
-  //       <ConfigurationContext.Provider
-  //         value={{
-  //           savedList: [],
-  //           mode: true,
-  //           pagein: "Home",
-  //           handleSavedList: jest.fn(),
-  //           handleMode: jest.fn(),
-  //           handlePage: jest.fn(),
-  //         }}
-  //       >
-  //         <Navbar />
-  //       </ConfigurationContext.Provider>
-  //     </MemoryRouter>
-  //   )
-  //   // expect(screen.getByTestId("lightMode")).toBeInTheDocument();
-  //   expect(screen.getByTestId("theme-icon")).toBeInTheDocument()
-  //   fireEvent.click(screen.getByTestId("theme-icon"))
-    
-  //   await waitFor(() => {
-
-  //     expect(screen.getByTestId("darkMode")).toBeInTheDocument()
-  //   }
-    
-  //   );
-    
-  // })
 
   test("Logout panel styles are applied correctly in mobile view", async () => {
     const TestComponent = () => {

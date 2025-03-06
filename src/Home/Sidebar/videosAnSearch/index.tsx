@@ -308,7 +308,7 @@ class GetApiRes extends React.Component<{}, GetApiResState> {
           ) : videosArray.length > 0 ? (
             <Videos>
               {videosArray.map((item) => (
-                <Link key={item.id} to={`/video/${item.id}`}>
+                <Link key={item.id} to={`/video/${item.id}`} data-testid={item.id}>
                   <BGContainer>
                     <ThumbnailUrl
                       src={item.thumbnail_url}

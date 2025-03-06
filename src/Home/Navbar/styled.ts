@@ -39,7 +39,7 @@ const PopBtn = styled.div`
   justify-content: space-between;
   gap: 20px;
 `;
-const CancelBtn = styled.div`
+const CancelBtn = styled.button`
   color: rgb(148, 163, 184);
   font-size: 15px;
   cursor: pointer;
@@ -48,7 +48,7 @@ const CancelBtn = styled.div`
   border: 1px solid rgb(148, 163, 184);
   background-color: transparent;
 `;
-const ConfirmBtn = styled.div`
+const ConfirmBtn = styled.button`
   padding: 15px 30px;
   border-radius: 5px;
   border: 0px;

@@ -1,4 +1,5 @@
 
+
 describe('Login Page', () => {
   beforeEach(() => {
     cy.visit('/');
@@ -111,26 +112,24 @@ describe('Home Page', () => {
     cy.intercept('GET', 'https://apis.ccbp.in/videos/all?search=Nxtwave', {
       statusCode: 401,
       body: {
-        
       },
     });
     cy.visit('/NxtWatch/Home');
     cy.get('input[placeholder="Search"]').type('Nxtwave').should('have.value', 'Nxtwave');
-    // 
     cy.get('[data-testid="search-videos"]').should('exist').click();
     cy.contains('No Search results found').should('be.visible');
   })
   it("confirm the logout",()=>{
-    cy.visit('/NxtWatch/Home');
-    cy.get('[data-testid="logout-button-nav"]').click();
+    cy.get("button").contains("Log out").click();
     cy.contains('Are you sure you want to logout?').should('be.visible');
-    cy.get('[data-testid="cancel-button"]').click();
-    cy.contains('Are you sure you want to logout?').should('not.exist');
-    cy.get('[data-testid="logout-button-nav"]').click();
+    cy.get("button").contains("Cancel").click();
+        cy.contains('Are you sure you want to logout?').should("not.exist");
+
+
+    cy.get("button").contains("Log out").click();
     cy.contains('Are you sure you want to logout?').should('be.visible');
-    cy.get('[data-testid="confirm-button"]').click();
-    cy.url().should('include', '/');
-  })
+    cy.get("button").contains("Confirm").click();
+    cy.url().should('include', '/');})
 });
 describe("Navbar Component", () => {
   beforeEach(() => {
@@ -234,10 +233,226 @@ describe("VideosInHome Component", () => {
     cy.window().then((win) => {
       win.localStorage.setItem("mode", "dark");
     });
+    // theme-icon
+    cy.get('[data-testid="theme-icon"]').click();
 
     cy.reload();
+    cy.get('[data-testid="theme-icon"]').click();
+
     cy.get('[data-testid="sidebar-content"]').should("have.css", "background-color", "rgb(0, 0, 0)"); 
   });
 });
+describe("SidePanel Component", () => {
+  beforeEach(() => {
+   
+    cy.intercept('POST', 'https://apis.ccbp.in/login', {
+      statusCode: 200,
+      body: { jwt_token: 'mocked_jwt_token' },
+    }).as('loginRequest');
+
+    cy.visit('/');
+    cy.get('input[placeholder="Username"]').type('testuser');
+    cy.get('input[placeholder="Password"]').type('password123');
+    cy.contains('Login').click();
+
+    cy.wait('@loginRequest');
+
+    cy.url().should('include', '/NxtWatch/Home');
+  });
+
+  it("Navigates to all pages in sidebar by clicking the links", () => {
+    cy.get('[data-testid="home-sidebar"]').click();
+    cy.url().should('include', '/NxtWatch/Home');
+
+    
+    cy.get('[data-testid="trending-sidebar"]').click();
+    cy.url().should('include', '/NxtWatch/Trending');
 
 
+    cy.get('[data-testid="gaming-sidebar"]').click();
+    cy.url().should('include', '/NxtWatch/Gaming');
+
+
+    cy.get('[data-testid="saved-sidebar"]').click();
+    cy.url().should('include', '/NxtWatch/Saved');
+
+
+  });
+
+  it("Navigates to all pages in panel in mobile by clicking the links", () => {
+    cy.viewport(375, 812); 
+    
+    cy.get('[data-testid="logout-svg"]').click();
+    cy.get('[data-testid="home-panel"]').click();
+    cy.url().should('include', '/NxtWatch/Home');
+    
+    cy.get('[data-testid="logout-svg"]').click()   
+    cy.get('[data-testid="trending-panel"]').click();
+    cy.url().should('include', '/NxtWatch/Trending');
+ 
+    cy.get('[data-testid="logout-svg"]').click();
+    cy.get('[data-testid="gaming-panel"]').click();
+    cy.url().should('include', '/NxtWatch/Gaming');
+
+    cy.get('[data-testid="logout-svg"]').click();
+    cy.get('[data-testid="saved-panel"]').click();
+    cy.url().should('include', '/NxtWatch/Saved');
+  });
+
+  it("Closes sidebar when close icon is clicked", () => {
+    cy.viewport(375, 812); 
+    cy.get('[data-testid="logout-svg"]').click();
+    cy.get('[data-testid="panel-props"]').should("have.css", "display", "block");
+
+    cy.get('[data-testid="closeIcon-sidebar"]').click();
+    cy.get('[data-testid="panel-props"]').should("have.css", "display", "none");
+  });
+});
+
+describe("Trending Component", () => {
+  beforeEach(() => {
+    cy.intercept("POST", "https://apis.ccbp.in/login", {
+      statusCode: 200,
+      body: { jwt_token: "mocked_jwt_token" },
+    }).as("loginRequest");
+
+    cy.visit("/");
+    cy.get('input[placeholder="Username"]').type("testuser");
+    cy.get('input[placeholder="Password"]').type("password123");
+    cy.contains("Login").click();
+
+    cy.wait("@loginRequest");
+
+    cy.url().should("include", "/NxtWatch/Home");
+
+    cy.intercept("GET", "**/videos/trending", {
+      statusCode: 200,
+      body: {
+        videos: [
+          {
+            channel: {
+              name: "iB Hubs",
+              profile_image_url:
+                "https://assets.ccbp.in/frontend/react-js/nxt-watch/ib-hubs-img.png",
+            },
+            id: "ad9822d2-5763-41d9-adaf-baf9da3fd490",
+            published_at: "Nov 29, 2016",
+            thumbnail_url:
+              "https://assets.ccbp.in/frontend/react-js/nxt-watch/ibhubs-img.png",
+            title: "iB Hubs Announcement Event",
+            view_count: "26K",
+          },
+        ],
+      },
+    }).as("apiCall");
+
+    cy.get('[data-testid="trending-sidebar"]').click();
+    cy.url().should("include", "/NxtWatch/Trending");
+  });
+
+  it("renders Trending text and applies theme mode correctly", () => {
+    cy.wait("@apiCall");
+
+    cy.contains("iB Hubs").should("be.visible");
+    cy.contains("Nov 29, 2016").should("be.visible");
+    cy.contains("iB Hubs Announcement Event").should("be.visible");
+    cy.contains(/26K/i).should("be.visible");
+    cy.get("h1").contains("Trending").should("be.visible");
+
+    cy.get('[data-testid="trending-mode"]').should(
+      "have.css",
+      "background-color",
+      "rgb(241, 241, 241)"
+    );
+
+    cy.get('[data-testid="theme-icon"]').click();
+
+    cy.get('[data-testid="trending-mode"]').should(
+      "have.css",
+      "background-color",
+      "rgb(24, 24, 24)"
+    );
+  });
+
+  it("handles API error", () => {
+    cy.intercept("GET", "**/videos/trending", {
+      statusCode: 401,
+      body: {},
+    }).as("apiError");
+
+    cy.reload();
+    cy.wait("@apiError");
+
+    cy.contains("Something went wrong. Please try again!").should("be.visible");
+  });
+});
+
+describe("Gaming Component", () => {
+  beforeEach(() => {
+    cy.intercept("POST", "https://apis.ccbp.in/login", {
+      statusCode: 200,
+      body: { jwt_token: "mocked_jwt_token" },
+    }).as("loginRequest");
+
+    cy.visit("/");
+    cy.get('input[placeholder="Username"]').type("testuser");
+    cy.get('input[placeholder="Password"]').type("password123");
+    cy.contains("Login").click();
+
+    cy.wait("@loginRequest");
+
+    cy.url().should("include", "/NxtWatch/Home");
+
+    cy.intercept("GET", "**/videos/gaming", {
+      statusCode: 200,
+      body: {
+        videos: [
+          {
+            id: "b214dc8a-b126-4d15-8523-d37404318347",
+            thumbnail_url:
+              "https://assets.ccbp.in/frontend/react-js/nxt-watch/drop-stack-ball-img.png",
+            title: "Drop Stack Ball",
+            view_count: "44K",
+          },
+        ],
+      },
+    }).as("apiCall");
+
+    cy.get('[data-testid="gaming-sidebar"]').click();
+    cy.url().should("include", "/NxtWatch/Gaming");
+  });
+
+  it("renders Gaming text and applies theme mode correctly", () => {
+    cy.wait("@apiCall");
+
+    cy.contains("Drop Stack Ball").should("be.visible");
+    cy.contains(/44K/i).should("be.visible");
+    cy.get("h1").contains("Gaming").should("be.visible");
+
+    cy.get('[data-testid="Gaming-mode"]').should(
+      "have.css",
+      "background-color",
+      "rgb(241, 241, 241)"
+    );
+
+    cy.get('[data-testid="theme-icon"]').click();
+
+    cy.get('[data-testid="Gaming-mode"]').should(
+      "have.css",
+      "background-color",
+      "rgb(24, 24, 24)"
+    );
+  });
+
+  it("handles API error", () => {
+    cy.intercept("GET", "**/videos/gaming", {
+      statusCode: 401,
+      body: {},
+    }).as("apiError");
+
+    cy.reload();
+    cy.wait("@apiError");
+
+    cy.contains("Something went wrong. Please try again!").should("be.visible");
+  });
+});

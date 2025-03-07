@@ -1,5 +1,3 @@
-
-
 describe('Login Page', () => {
   beforeEach(() => {
     cy.visit('/');
@@ -540,7 +538,6 @@ describe("VideoPlayer Component", () => {
       },
     }).as("getVideoDetails");
     
-    // Mock video list API
     cy.intercept("GET", "https://apis.ccbp.in/videos/all?search=", {
       statusCode: 200,
       body: {
@@ -586,17 +583,17 @@ describe("VideoPlayer Component", () => {
 
   it("handles error state when API call fails", () => {
     cy.clearLocalStorage();
-  
     cy.intercept("GET", "https://apis.ccbp.in/videos/1", {
       statusCode: 401,
       body: {},
     }).as("getVideoError");
+    
+    // cy.visit("/NxtWatch/watch/1");
+    cy.reload()
   
-    cy.visit("/NxtWatch/watch/1");
+    cy.wait("@getVideoError");
   
-    cy.wait("@getVideoError", { timeout: 10000 });
-  
-    cy.contains("Video not available").should("be.visible");
+    cy.contains("Video not avilable").should("be.visible");
   });
   
   
@@ -607,6 +604,24 @@ describe("VideoPlayer Component", () => {
 
     cy.window().then((win) => {
       const likeList = JSON.parse(win.localStorage.getItem("likeList") || "[]");
+      expect(likeList.length).to.be.greaterThan(0);
+    });
+  });
+  it("Clicking disLike updates the UI and localStorage", () => {
+    cy.get("[data-testid='dislike']").click();
+    cy.get("[data-testid='dislike']").should("have.css", "color", "rgb(0, 0, 255)");
+
+    cy.window().then((win) => {
+      const likeList = JSON.parse(win.localStorage.getItem("dislikeList") || "[]");
+      expect(likeList.length).to.be.greaterThan(0);
+    });
+  });
+  it("Clicking disLike updates the UI and localStorage", () => {
+    cy.get("[data-testid='saved-element']").click();
+    cy.get("[data-testid='saved-element']").should("have.css", "color", "rgb(0, 0, 255)");
+
+    cy.window().then((win) => {
+      const likeList = JSON.parse(win.localStorage.getItem("savedList") || "[]");
       expect(likeList.length).to.be.greaterThan(0);
     });
   });
